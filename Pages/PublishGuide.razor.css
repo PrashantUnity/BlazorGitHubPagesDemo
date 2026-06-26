@@ -1,0 +1,32 @@
+.guide-section {
+    margin-bottom: 2rem;
+}
+
+.guide-section h2 {
+    margin-top: 1.5rem;
+    font-size: 1.35rem;
+}
+
+.guide-section pre {
+    background-color: #f5f5f5;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    padding: 1rem;
+    overflow-x: auto;
+    font-size: 0.875rem;
+}
+
+.guide-section pre code {
+    color: #212529;
+    white-space: pre;
+}
+
+.guide-section dl dt {
+    font-weight: 600;
+    margin-top: 0.75rem;
+}
+
+.guide-section dl dd {
+    margin-left: 0;
+    color: #495057;
+}

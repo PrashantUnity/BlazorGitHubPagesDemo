@@ -1,0 +1,172 @@
+@page "/publish-guide"
+
+<PageTitle>Publish Blazor WASM on GitHub Pages</PageTitle>
+
+<h1>Publish Blazor WebAssembly on GitHub Pages</h1>
+
+<p class="lead">
+    This sample project is configured to deploy automatically to GitHub Pages.
+    Follow the steps below to use the same setup in your own repository.
+</p>
+
+<section class="guide-section">
+    <h2>Prerequisites</h2>
+    <ul>
+        <li>.NET SDK (this project uses <strong>.NET 9</strong>)</li>
+        <li>A GitHub repository (public repos get free GitHub Pages)</li>
+        <li>Your default branch pushed to GitHub (usually <code>main</code>)</li>
+    </ul>
+</section>
+
+<section class="guide-section">
+    <h2>1. Create the Blazor WASM project</h2>
+    <pre><code>dotnet new blazorwasm -o BlazorGitHubPagesDemo
+cd BlazorGitHubPagesDemo</code></pre>
+    <p>
+        Keep <code>&lt;base href="/" /&gt;</code> in <code>wwwroot/index.html</code> for local development.
+        The workflow rewrites it at publish time to match your repository name.
+    </p>
+</section>
+
+<section class="guide-section">
+    <h2>2. Add the GitHub Actions workflow</h2>
+    <p>Create <code>.github/workflows/dotnet.yaml</code> with content like this:</p>
+    <pre><code>name: DeployBlazorWebAssembly
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.0.x
+
+    - name: Publish Blazor WebAssembly project
+      run: dotnet publish BlazorGitHubPagesDemo.csproj -c Release -o release --nologo
+
+    - name: Change base-tag in index.html from / to BlazorGitHubPagesDemo
+      run: sed -i 's/&lt;base href="\/" \/&gt;/&lt;base href="\/BlazorGitHubPagesDemo\/" \/&gt;/g' release/wwwroot/index.html
+
+    - name: Add 404.html (for GitHub Pages SPA fallback)
+      run: cp release/wwwroot/index.html release/wwwroot/404.html
+
+    - name: Add .nojekyll file
+      run: touch release/wwwroot/.nojekyll
+
+    - name: Deploy to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@4.1.5
+      with:
+        token: $@@{{ secrets.GITHUB_TOKEN }}
+        branch: gh-pages
+        folder: release/wwwroot</code></pre>
+
+    <h3>Customize for your repository</h3>
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>What to change</th>
+                <th>Where</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Default branch name</td>
+                <td><code>on.push.branches</code> (use <code>master</code> if that is your default)</td>
+            </tr>
+            <tr>
+                <td>.NET version</td>
+                <td><code>dotnet-version</code> in the Setup .NET step</td>
+            </tr>
+            <tr>
+                <td>Project file name</td>
+                <td><code>dotnet publish</code> command</td>
+            </tr>
+            <tr>
+                <td>Repository name (URL path)</td>
+                <td>The <code>sed</code> step — replace <code>BlazorGitHubPagesDemo</code> with your repo name</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<section class="guide-section">
+    <h2>3. Why these post-publish steps matter</h2>
+    <dl>
+        <dt><code>&lt;base href&gt;</code></dt>
+        <dd>
+            GitHub Pages serves project sites at <code>https://&lt;user&gt;.github.io/&lt;repo&gt;/</code>.
+            Blazor needs the base path to load scripts and assets from the correct URL.
+        </dd>
+        <dt><code>404.html</code></dt>
+        <dd>
+            A copy of <code>index.html</code> so deep links (for example <code>/counter</code>) reload correctly
+            instead of returning a GitHub 404 page.
+        </dd>
+        <dt><code>.nojekyll</code></dt>
+        <dd>
+            Tells GitHub Pages not to ignore folders starting with <code>_</code>, which Blazor uses
+            (for example <code>_framework</code>).
+        </dd>
+    </dl>
+</section>
+
+<section class="guide-section">
+    <h2>4. Configure GitHub</h2>
+    <ol>
+        <li>Push your code to GitHub.</li>
+        <li>
+            Open <strong>Settings → Actions → General</strong> and set
+            <strong>Workflow permissions</strong> to <em>Read and write permissions</em>.
+        </li>
+        <li>
+            Open <strong>Settings → Pages</strong>. Under <strong>Build and deployment</strong>,
+            set <strong>Source</strong> to <em>Deploy from a branch</em> and choose the
+            <code>gh-pages</code> branch (created by the workflow after the first successful run).
+        </li>
+        <li>
+            Wait for the <strong>Actions</strong> tab to show a green check on
+            <em>DeployBlazorWebAssembly</em>, then open
+            <code>https://&lt;username&gt;.github.io/&lt;repository&gt;/</code>.
+        </li>
+    </ol>
+</section>
+
+<section class="guide-section">
+    <h2>5. Native WASM workloads (optional)</h2>
+    <p>
+        If your app uses libraries that require native WASM builds (for example SkiaSharp or SQLite),
+        install the workload before publish:
+    </p>
+    <pre><code>- name: Install .NET WASM Build Tools
+  run: dotnet workload install wasm-tools</code></pre>
+    <p>Add this step after <em>Setup .NET</em> and before <em>Publish</em>.</p>
+</section>
+
+<section class="guide-section">
+    <h2>Further reading</h2>
+    <ul>
+        <li>
+            <a href="https://codefrydev.in/Updates/blog/blazor/deploytogithub/" target="_blank" rel="noopener">
+                Full walkthrough with video — Code Fry Dev
+            </a>
+        </li>
+        <li>
+            <a href="https://learn.microsoft.com/aspnet/core/blazor/host-and-deploy/webassembly" target="_blank" rel="noopener">
+                Microsoft docs — Host and deploy Blazor WebAssembly
+            </a>
+        </li>
+        <li>
+            <a href="https://docs.github.com/en/pages" target="_blank" rel="noopener">
+                GitHub Pages documentation
+            </a>
+        </li>
+    </ul>
+</section>
