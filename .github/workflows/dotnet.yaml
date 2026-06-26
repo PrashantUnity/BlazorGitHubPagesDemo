@@ -17,12 +17,10 @@ jobs:
         
     - name: Publish .NET Core Project
       run: dotnet publish BlazorGitHubPagesDemo.csproj -c Release -o release --nologo
-    
- 
-    - name: Change base-tag in index.html from / to BlazorGitHubPagesDemo
-      run: sed -i 's/<base href="\/" \/>/<base href="\/BlazorGitHubPagesDemo\/" \/>/g' release/wwwroot/index.html
-    
- 
+
+    - name: Set GitHub Pages base href
+      run: sed -i 's|<base href="/" />|<base href="/BlazorGitHubPagesDemo/" />|g' release/wwwroot/index.html
+
     - name: copy index.html to 404.html
       run: cp release/wwwroot/index.html release/wwwroot/404.html
 
