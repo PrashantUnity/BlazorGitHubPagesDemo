@@ -1,0 +1,5 @@
+* text=auto
+
+# Prevent Git from altering line endings in Blazor framework assets (GitHub Pages)
+*.js binary
+*.wasm binary
