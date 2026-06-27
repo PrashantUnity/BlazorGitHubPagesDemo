@@ -12,7 +12,7 @@
 <section class="guide-section">
     <h2>Prerequisites</h2>
     <ul>
-        <li>.NET SDK (this project uses <strong>.NET 9</strong>)</li>
+        <li>.NET SDK (this project uses <strong>.NET 10</strong>)</li>
         <li>A GitHub repository (public repos get free GitHub Pages)</li>
         <li>Your default branch pushed to GitHub (usually <code>main</code>)</li>
     </ul>
@@ -47,7 +47,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 9.0.x
+        dotnet-version: 10.0.x
 
     - name: Publish Blazor WebAssembly project
       run: dotnet publish BlazorGitHubPagesDemo.csproj -c Release -o release --nologo

@@ -31,7 +31,7 @@ Copy [.github/workflows/dotnet.yaml](.github/workflows/dotnet.yaml) into your re
 | Setting | Update in workflow |
 |--------|---------------------|
 | Default branch | `on.push.branches` |
-| .NET SDK | `dotnet-version` (this repo uses `9.0.x`) |
+| .NET SDK | `dotnet-version` (this repo uses `10.0.x`) |
 | Project file | `dotnet publish` `.csproj` name |
 | Repo name in URL | `sed` step — replace `BlazorGitHubPagesDemo` with your GitHub repository name |
 

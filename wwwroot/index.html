@@ -4,8 +4,42 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Sample Blazor WebAssembly app that deploys to GitHub Pages with GitHub Actions (.NET 10)." />
     <title>BlazorGitHubPagesDemo</title>
     <base href="/BlazorGitHubPagesDemo/" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://prashantunity.github.io/BlazorGitHubPagesDemo/#website",
+          "url": "https://prashantunity.github.io/BlazorGitHubPagesDemo/",
+          "name": "Blazor WASM on GitHub Pages",
+          "description": "Sample Blazor WebAssembly project that deploys to GitHub Pages using GitHub Actions.",
+          "inLanguage": "en"
+        },
+        {
+          "@type": "SoftwareApplication",
+          "@id": "https://prashantunity.github.io/BlazorGitHubPagesDemo/#software",
+          "name": "BlazorGitHubPagesDemo",
+          "url": "https://prashantunity.github.io/BlazorGitHubPagesDemo/",
+          "description": "Minimal Blazor WebAssembly sample with automated GitHub Pages deployment.",
+          "applicationCategory": "DeveloperApplication",
+          "operatingSystem": "Web",
+          "programmingLanguage": "C#",
+          "softwareVersion": "10.0",
+          "isPartOf": { "@id": "https://prashantunity.github.io/BlazorGitHubPagesDemo/#website" },
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "codeRepository": "https://github.com/PrashantUnity/BlazorGitHubPagesDemo"
+        }
+      ]
+    }
+    </script>
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
     <link rel="stylesheet" href="css/app.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
